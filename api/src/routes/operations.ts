@@ -10,44 +10,6 @@ export async function operationRoutes(app: FastifyInstance){
     await request.jwtVerify()
   });
 
-  // Criação de uma nova operação
-  app
-  .withTypeProvider<ZodTypeProvider>()
-  .post('/operations/create', {
-    schema: {
-      body: z.object({
-        type: z.string(),
-        dateAt: z.coerce.date(),
-        description: z.string(),
-        userId: z.string().uuid(),
-        amount: z.coerce.number().int(),
-      }),
-      response: {
-        201: z.object({
-          operationId: z.number().int()
-        })
-      }
-    }
-  }, async (request, reply) => {
-    const data = request.body;
-
-    try {
-      const operation = await prisma.operation.create({
-        data: {
-          type: data.type,
-          amount: data.amount,
-          dateAt: data.dateAt,
-          userId: request.user.sub,
-          description: data.description,
-        }
-      });
-
-      return reply.status(201).send({ operationId: operation.id });
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
   // Resgatando operações do usuário
   app
   .withTypeProvider<ZodTypeProvider>()
@@ -87,6 +49,44 @@ export async function operationRoutes(app: FastifyInstance){
     });
 
     return reply.status(200).send(operations)
+  });
+
+  // Criação de uma nova operação
+  app
+  .withTypeProvider<ZodTypeProvider>()
+  .post('/operations/create', {
+    schema: {
+      body: z.object({
+        type: z.string(),
+        dateAt: z.coerce.date(),
+        description: z.string(),
+        userId: z.string().uuid(),
+        amount: z.coerce.number().int(),
+      }),
+      response: {
+        201: z.object({
+          operationId: z.number().int()
+        })
+      }
+    }
+  }, async (request, reply) => {
+    const data = request.body;
+
+    try {
+      const operation = await prisma.operation.create({
+        data: {
+          type: data.type,
+          amount: data.amount,
+          dateAt: data.dateAt,
+          userId: request.user.sub,
+          description: data.description,
+        }
+      });
+
+      return reply.status(201).send({ operationId: operation.id });
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   // Editando uma operação específica

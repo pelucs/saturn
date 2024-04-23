@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange } from "react-day-picker";
 import { format, subDays } from "date-fns";
-import { useEffect, useState } from "react";
+import { OperationsContext } from "@/context/operationsContext";
+import { useContext, useState } from "react";
 import { CalendarIcon, SlidersHorizontal } from "lucide-react";
 import {
   Popover,
@@ -20,33 +21,22 @@ export function DatePickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
 
+  const { updateFilteringDates } = useContext(OperationsContext);
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), (new Date().getDate() - 1)),
     to: new Date(),
   });
 
-  // Verificando se existe data 
-  useEffect(() => {
-    const getDateLocalStorage = localStorage.getItem('filtering_dates');
-
-    if(getDateLocalStorage){
-      const json = JSON.parse(getDateLocalStorage);
-
-      setDate({
-        from: json.from,
-        to: json.to,
-      });
-    }
-  }, []);
-
   const handleFiltered = async () => {
-    if(date){
+    if (date && date.from && date.to) {
       const filteringDates = {
-        from: date.from?.toISOString(),
-        to: date.to?.toISOString(),
+        from: new Date(date.from),
+        to: new Date(date.to),
       };
 
       localStorage.setItem('filtering_dates', JSON.stringify(filteringDates)); // Verificar
+      updateFilteringDates(filteringDates);
     }
   }
 
@@ -77,7 +67,7 @@ export function DatePickerRange({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0" align="end">
           <Calendar
             initialFocus
             mode="range"

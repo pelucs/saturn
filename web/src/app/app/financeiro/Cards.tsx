@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DatePickerRange } from "@/components/DatePickerRange";
 import { useContext, useEffect, useState } from "react";
-import { OperationsContext } from "@/context/operationsContext";
+import { OperationsContext, OperationsContextProvider } from "@/context/operationsContext";
 import { 
   CircleMinus, 
   CirclePlus, 
@@ -54,7 +54,9 @@ export function Cards(){
             )}
           </Button>
 
-          <DatePickerRange/>
+          <OperationsContextProvider>
+            <DatePickerRange/>
+          </OperationsContextProvider>
         </div>
       </div>
 
