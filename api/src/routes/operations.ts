@@ -56,7 +56,7 @@ export async function operationRoutes(app: FastifyInstance){
       params: z.object({
         userId: z.string().uuid()
       }),
-      body: z.object({
+      querystring: z.object({
         startDate: z.string(), //Ajeitar
         endDate: z.string(),
       })
@@ -64,7 +64,7 @@ export async function operationRoutes(app: FastifyInstance){
     }
    }, async (request, reply) => {
     const { userId } = request.params;
-    const { startDate, endDate } = request.body;
+    const { startDate, endDate } = request.query;
     
     const operations = await prisma.operation.findMany({
       where: {
