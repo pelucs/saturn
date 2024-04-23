@@ -24,9 +24,8 @@ export function OperationsContextProvider({ children }: OperationsContextProvide
   const [operations, setOperations] = useState<IOperations[]>([]);
   
   useEffect(() => {
-    const fetchOperations = async () => {
+    const getOperations = async () => {
       try {
-
         // Resgatando token
         const token = Cookie.get('token');
 
@@ -37,8 +36,10 @@ export function OperationsContextProvider({ children }: OperationsContextProvide
         // Decodificando o token
         const user: User = jwtDecode(token);
 
+        const querystring = `startDate=2024-04-13&endDate=2024-04-21`;
+
         // Resgatando as operações
-        const response = await api.get(`/operations/${user.sub}`, {
+        const response = await api.get(`/operations/${user.sub}?${querystring}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -50,7 +51,7 @@ export function OperationsContextProvider({ children }: OperationsContextProvide
       }
     };
 
-    fetchOperations();
+    getOperations();
   }, []);
 
   return(

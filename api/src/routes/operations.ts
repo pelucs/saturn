@@ -17,7 +17,7 @@ export async function operationRoutes(app: FastifyInstance){
     schema: {
       body: z.object({
         type: z.string(),
-        dateAt: z.string(),
+        dateAt: z.coerce.date(),
         description: z.string(),
         userId: z.string().uuid(),
         amount: z.coerce.number().int(),
@@ -57,7 +57,7 @@ export async function operationRoutes(app: FastifyInstance){
         userId: z.string().uuid()
       }),
       querystring: z.object({
-        startDate: z.string(), //Ajeitar
+        startDate: z.string(),
         endDate: z.string(),
       })
       // Configurar o response
@@ -69,6 +69,10 @@ export async function operationRoutes(app: FastifyInstance){
     const operations = await prisma.operation.findMany({
       where: {
         userId,
+        dateAt: {
+          lte: new Date(endDate).toISOString(),
+          gte: new Date(startDate).toISOString(),
+        }
       },
       select: {
         id: true,
@@ -95,7 +99,7 @@ export async function operationRoutes(app: FastifyInstance){
       }),
       body: z.object({
         type: z.string(),
-        dateAt: z.string(),
+        dateAt: z.coerce.date(),
         description: z.string(),
         amount: z.coerce.number().int(),
       })

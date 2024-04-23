@@ -24,7 +24,7 @@ model Operation {
 
   type        String
   description String
-  dateAt      String
+  dateAt      DateTime
   amount      Int
 
   user User @relation(fields: [userId], references: [id])

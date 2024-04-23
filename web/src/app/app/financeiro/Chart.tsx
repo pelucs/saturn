@@ -65,30 +65,25 @@ export function Chart(){
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" opacity={.3}/>
         <XAxis
-            stroke="#888888"
-            dataKey="name"
-            fontSize={12}
-          />
-          <YAxis
-            stroke="#888888"
-            fontSize={12} 
-          />
-          {/* <Bar
-            dataKey="total"
-            radius={[4, 4, 0, 0]}
-            className="fill-primary"
-          /> */}
-          <Bar 
-            dataKey="Entrada" 
-            radius={[4, 4, 0, 0]}
-            className="fill-green-500" 
-          />
-          <Bar 
-            dataKey="Saída" 
-            radius={[4, 4, 0, 0]}
-            className="fill-red-500" 
-          />
-          <Tooltip cursor={false}/>
+          dataKey="name"
+          stroke="#888888"
+          fontSize={12}
+        />
+        <YAxis
+          stroke="#888888"
+          fontSize={12} 
+        />
+        <Bar 
+          dataKey="Entrada" 
+          radius={[4, 4, 0, 0]}
+          className="fill-green-500" 
+        />
+        <Bar 
+          dataKey="Saída" 
+          radius={[4, 4, 0, 0]}
+          className="fill-red-500" 
+        />
+        <Tooltip cursor={false}/>
       </BarChart>
     </ResponsiveContainer>
   );

@@ -2,13 +2,13 @@ import { Chart } from "./Chart";
 import { Cards } from "./Cards";
 import { Header } from "@/app/app/Header";
 import { cookies } from "next/headers";
+import { getUser } from "@/lib/auth";
 import { RedirectClient } from "@/components/RedirectClient";
 import { TableOperations } from "./Table";
 import { CreateOperation } from "./CreateOperation";
+import { RecentOperations } from "./RecentOprations";
 import { OperationsContextProvider } from "@/context/operationsContext";
 
-import { getUser } from "@/lib/auth";
-import { RecentOperations } from "./RecentOprations";
 
 export default () => {
 

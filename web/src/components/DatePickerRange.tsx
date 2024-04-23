@@ -1,36 +1,53 @@
 "use client"
 
-import * as React from "react"
-
 import Cookies from "js-cookie";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import { ptBR } from 'date-fns/locale'; 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { DateRange } from "react-day-picker"
-import { format, subDays } from "date-fns"
-import { CalendarIcon, SlidersHorizontal } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { DateRange } from "react-day-picker";
+import { format, subDays } from "date-fns";
+import { useEffect, useState } from "react";
+import { CalendarIcon, SlidersHorizontal } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-
+} from "@/components/ui/popover";
 
 export function DatePickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
 
-  const [date, setDate] = React.useState<DateRange | undefined>({
+  const [date, setDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), (new Date().getDate() - 1)),
     to: new Date(),
   });
 
-  const handleFiltered = async () => {
-    const token = Cookies.get('token');
+  // Verificando se existe data 
+  useEffect(() => {
+    const getDateLocalStorage = localStorage.getItem('filtering_dates');
 
-    
+    if(getDateLocalStorage){
+      const json = JSON.parse(getDateLocalStorage);
+
+      setDate({
+        from: json.from,
+        to: json.to,
+      });
+    }
+  }, []);
+
+  const handleFiltered = async () => {
+    if(date){
+      const filteringDates = {
+        from: date.from?.toISOString(),
+        to: date.to?.toISOString(),
+      };
+
+      localStorage.setItem('filtering_dates', JSON.stringify(filteringDates)); // Verificar
+    }
   }
 
   return (
@@ -72,7 +89,7 @@ export function DatePickerRange({
           />
 
           <div className="pt-2 pb-5 px-5">
-            <Button className="gap-2">
+            <Button onClick={handleFiltered} className="gap-2">
               <SlidersHorizontal className="size-4"/>
 
               Filtrar
