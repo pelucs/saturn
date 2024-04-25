@@ -22,7 +22,6 @@ interface IDate{
 
 interface OperationsServicesContext{
   operations: IOperations[];
-  updateFilteringDates: (newDate: IDate) => void;
 }
 
 export const OperationsContext = createContext({} as OperationsServicesContext);
@@ -75,21 +74,19 @@ export function OperationsContextProvider({ children }: OperationsContextProvide
           }
         });
 
+        console.log(response.data)
         setOperations(response.data);
       } catch (error) {
         console.error("Erro ao buscar operações:", error);
       }
     };
 
-    getOperations();
-  }, [filteringDates]);
 
-  const updateFilteringDates = (newDate: IDate) => {
-    setFilteringDates(newDate);
-  }
+    getOperations();
+  }, []);
 
   return(
-    <OperationsContext.Provider value={{ operations, updateFilteringDates  }}>
+    <OperationsContext.Provider value={{ operations  }}>
       {children}
     </OperationsContext.Provider>
   );

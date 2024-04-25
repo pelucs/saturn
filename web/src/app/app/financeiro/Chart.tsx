@@ -1,7 +1,5 @@
 "use client"
 
-import { format } from 'date-fns';
-import { operations } from '@/lib/operations';
 import { useContext, useEffect, useState } from 'react';
 import { 
   Bar, 
@@ -10,59 +8,67 @@ import {
   Tooltip, 
   BarChart, 
   CartesianGrid,
-  ResponsiveContainer, 
+  ResponsiveContainer,
+  Legend, 
 } from 'recharts';
 import { OperationsContext } from '@/context/operationsContext';
 
 interface OperationTypeChart{
-  name: string; // Data
-  input: string; // Entradas
-  output: string; // Saídas
+  name: string;
+  entrada: string; 
+  saida: string;
 }
 
 export function Chart(){
 
-  const data = [
-    {
-      "name": "Semana 1",
-      "Entrada": 4000,
-      "Saída": 2400
-    },
-    {
-      "name": "Page B",
-      "Entrada": 3000,
-      "Saída": 1398
-    },
-    {
-      "name": "Page C",
-      "Entrada": 2000,
-      "Saída": 9800
-    },
-    {
-      "name": "Page D",
-      "Entrada": 2780,
-      "Saída": 3908
-    },
-    {
-      "name": "Page E",
-      "Entrada": 1890,
-      "Saída": 4800
-    },
-    {
-      "name": "Page F",
-      "Entrada": 2390,
-      "Saída": 3800
-    },
-    {
-      "name": "Page G",
-      "Entrada": 3490,
-      "Saída": 4300
-    }
-  ];
+  const { operations } = useContext(OperationsContext);
+
+  const [operationChartData, setOperationChartData] = useState<OperationTypeChart[]>([]);
+
+  useEffect(() => {
+
+    // Função para agrupar e somar as operações por data
+    const groupAndSumOperationsByDate = () => {
+      const operationSum: Record<string, { inputs: number, outputs: number }> = {};
+
+      operations.forEach(operation => {
+        const date = new Date(operation.dateAt).toLocaleDateString();
+        const amount = operation.amount;
+
+        if (!operationSum[date]) {
+          operationSum[date] = {
+            inputs: 0,
+            outputs: 0
+          };
+        }
+
+        if (operation.type === 'entrada') {
+          operationSum[date].inputs += amount;
+        } else {
+          operationSum[date].outputs += amount;
+        }
+      });
+      
+      return operationSum;
+    };
+
+    // Agrupar e somar as operações por data
+    const operationSumByDate = groupAndSumOperationsByDate();
+
+    // Transformar os dados no formato necessário para o gráfico
+    const chartData: OperationTypeChart[] = Object.entries(operationSumByDate).map(([date, { inputs, outputs }]) => ({
+      name: date,
+      entrada: inputs.toString(),
+      saida: outputs.toString(),
+    }));
+
+    
+    setOperationChartData(chartData);
+  }, [operations]); 
 
   return(
     <ResponsiveContainer width="95%" height={250}>
-      <BarChart data={data}>
+      <BarChart data={operationChartData}>
         <CartesianGrid strokeDasharray="3 3" opacity={.3}/>
         <XAxis
           dataKey="name"
@@ -74,12 +80,12 @@ export function Chart(){
           fontSize={12} 
         />
         <Bar 
-          dataKey="Entrada" 
+          dataKey="entrada" 
           radius={[4, 4, 0, 0]}
           className="fill-green-500" 
         />
         <Bar 
-          dataKey="Saída" 
+          dataKey="saida" 
           radius={[4, 4, 0, 0]}
           className="fill-red-500" 
         />

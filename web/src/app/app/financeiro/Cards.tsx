@@ -28,8 +28,8 @@ export function Cards(){
     const inputAmounts = operations.filter(operation => operation.type === "entrada").map(operation => operation.amount);
     const outputAmounts = operations.filter(operation => operation.type !== "entrada").map(operation => operation.amount);
   
-    const totalInput = inputs.reduce((a, b) => a + b, 0);
-    const totalOutput = outputs.reduce((a, b) => a + b, 0); 
+    const totalInput = inputAmounts.reduce((a, b) => a + b, 0);
+    const totalOutput = outputAmounts.reduce((a, b) => a + b, 0); 
 
     setTotal(totalInput - totalOutput);
     setInputs(inputAmounts);

@@ -1,5 +1,5 @@
 export interface IOperations{
-  id: number;
+  id: string;
   description: string;
   amount: number;
   dateAt: string;

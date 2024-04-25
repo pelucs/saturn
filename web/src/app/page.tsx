@@ -7,17 +7,19 @@ import Cookie from 'js-cookie';
 
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RedirectClient } from "@/components/RedirectClient";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import logoSaturn from '../../public/logo-saturn.svg';
 
 export default function Home(){
 
+  const router = useRouter();
+
   const isAuthenticated = Cookie.get('token');
 
   if(isAuthenticated){
-    return <RedirectClient to="/app/financeiro"/>
+    router.push("/app/financeiro");
   }
 
   const [active, setActive] = useState<boolean>(false);

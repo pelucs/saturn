@@ -1,16 +1,14 @@
 "use client"
 
-import Cookies from "js-cookie";
-
 import { cn } from "@/lib/utils";
 import { ptBR } from 'date-fns/locale'; 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange } from "react-day-picker";
 import { format, subDays } from "date-fns";
-import { OperationsContext } from "@/context/operationsContext";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarIcon, SlidersHorizontal } from "lucide-react";
+import { PopoverClose } from "@radix-ui/react-popover";
 import {
   Popover,
   PopoverContent,
@@ -21,22 +19,33 @@ export function DatePickerRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
 
-  const { updateFilteringDates } = useContext(OperationsContext);
-
   const [date, setDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), (new Date().getDate() - 1)),
     to: new Date(),
   });
 
-  const handleFiltered = async () => {
+  // Verifica se já existe alguma data pre setada no localstorage
+  useEffect(() => {
+    const datesFromLocalStorage = localStorage.getItem("filtering_dates");
+
+    if (datesFromLocalStorage) {
+      const json = JSON.parse(datesFromLocalStorage);
+      setDate({
+        from: json.from,
+        to: json.to,
+      });
+    }
+  }, []);
+
+  // Setando a data escolhida no localstorage
+  const handleFiltered = () => {
     if (date && date.from && date.to) {
       const filteringDates = {
         from: new Date(date.from),
         to: new Date(date.to),
       };
-
-      localStorage.setItem('filtering_dates', JSON.stringify(filteringDates)); // Verificar
-      updateFilteringDates(filteringDates);
+      localStorage.setItem('filtering_dates', JSON.stringify(filteringDates));
+      window.location.reload();
     }
   }
 
@@ -79,10 +88,12 @@ export function DatePickerRange({
           />
 
           <div className="pt-2 pb-5 px-5">
-            <Button onClick={handleFiltered} className="gap-2">
-              <SlidersHorizontal className="size-4"/>
+            <Button asChild onClick={handleFiltered} className="gap-2">
+              <PopoverClose>
+                <SlidersHorizontal className="size-4"/>
 
-              Filtrar
+                Filtrar
+              </PopoverClose>
             </Button>
           </div>
         </PopoverContent>
