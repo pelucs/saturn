@@ -65,7 +65,7 @@ export async function operationRoutes(app: FastifyInstance){
       }),
       response: {
         201: z.object({
-          operationId: z.string()
+          operationId: z.number().int()
         })
       }
     }
@@ -95,7 +95,7 @@ export async function operationRoutes(app: FastifyInstance){
   .put('/operation/:operationsId', { 
     schema: {
       params: z.object({
-        operationsId: z.string()
+        operationsId: z.coerce.number().int()
       }),
       body: z.object({
         type: z.string(),

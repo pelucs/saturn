@@ -67,30 +67,38 @@ export function Chart(){
   }, [operations]); 
 
   return(
-    <ResponsiveContainer width="95%" height={250}>
-      <BarChart data={operationChartData}>
-        <CartesianGrid strokeDasharray="3 3" opacity={.3}/>
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12} 
-        />
-        <Bar 
-          dataKey="entrada" 
-          radius={[4, 4, 0, 0]}
-          className="fill-green-500" 
-        />
-        <Bar 
-          dataKey="saida" 
-          radius={[4, 4, 0, 0]}
-          className="fill-red-500" 
-        />
-        <Tooltip cursor={false}/>
-      </BarChart>
-    </ResponsiveContainer>
+    <div>
+      {operationChartData.length > 0 ? (
+        <ResponsiveContainer width="95%" height={250}>
+          <BarChart data={operationChartData}>
+            <CartesianGrid strokeDasharray="3 3" opacity={.3}/>
+            <XAxis
+              dataKey="name"
+              stroke="#888888"
+              fontSize={12}
+            />
+            <YAxis
+              stroke="#888888"
+              fontSize={12} 
+            />
+            <Bar 
+              dataKey="entrada" 
+              radius={[4, 4, 0, 0]}
+              className="fill-green-500" 
+            />
+            <Bar 
+              dataKey="saida" 
+              radius={[4, 4, 0, 0]}
+              className="fill-red-500" 
+            />
+            <Tooltip cursor={false}/>
+          </BarChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="w-full h-60 flex items-center justify-center">
+          <span className="text-muted-foreground">Nenhuma operação registrada</span>
+        </div>
+      )}
+    </div>
   );
 }

@@ -60,12 +60,13 @@ export function CreateOperation({ userId, type }: CreateOperationProps){
         });
 
         toast("Operação criada com sucesso!", {
-          description: `ID da operação: #${res.data.operationId}`
+          description: `ID da operação: #${res.data.operationId}`,
+          duration: 3000,
         });
 
         setTimeout(() => {
           window.location.reload();
-        }, 4000)
+        }, 3000)
       } catch (error) {
         console.error(error);
       }

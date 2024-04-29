@@ -17,13 +17,16 @@ export function Cards(){
 
   const { operations } = useContext(OperationsContext);
 
-  const [hiddenAmount, setHiddenAmount] = useState<"hidden" | "visible">("visible");
+  const [displayAmount, setDisplayAmount] = useState<"hidden" | "visible">("hidden");
 
   const [total, setTotal] = useState<number>(0);
   const [inputs, setInputs] = useState<number[]>([]);
   const [outputs, setOutputs] = useState<number[]>([]);
 
   useEffect(() => {
+
+    checkDisplayAmount(); 
+
     // Filtra as operações de entrada e saída
     const inputAmounts = operations.filter(operation => operation.type === "entrada").map(operation => operation.amount);
     const outputAmounts = operations.filter(operation => operation.type !== "entrada").map(operation => operation.amount);
@@ -36,6 +39,22 @@ export function Cards(){
     setOutputs(outputAmounts);
   }, [operations]);
 
+  // Verificando o display dos amounts (Preferência do usuário: "Visível ou Oculto")
+  const checkDisplayAmount = () => {
+    const checkFromLocalstorage = localStorage.getItem("amounts_display");
+
+    if(checkFromLocalstorage){
+      setDisplayAmount(
+        checkFromLocalstorage === "hidden" ? "hidden" : "visible"
+      );
+    }
+  }
+
+  const handleDisplayAmount = () => {
+    setDisplayAmount(displayAmount === "hidden" ? "visible" : "hidden");
+    localStorage.setItem("amounts_display", displayAmount === "hidden" ? "visible" : "hidden");
+  }
+
   return(
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
@@ -45,9 +64,9 @@ export function Cards(){
           <Button 
             variant="outline" 
             className="w-9 h-9 p-0"
-            onClick={() => setHiddenAmount(hiddenAmount === "hidden" ? "visible" : "hidden")}
+            onClick={handleDisplayAmount}
           >
-            {hiddenAmount === "hidden" ? (
+            {displayAmount === "hidden" ? (
               <Eye className="w-4 h-4"/>
             ) : (
               <EyeOff className="w-4 h-4"/>
@@ -70,7 +89,7 @@ export function Cards(){
           </div>
 
           <div className="mt-3">
-            {hiddenAmount === "hidden" ? (
+            {displayAmount === "hidden" ? (
               <span className="w-40 h-6 rounded bg-secondary block"/>
             ) : (
               <h1 className="text-2xl font-bold leading-none">
@@ -90,7 +109,7 @@ export function Cards(){
           </div>
 
           <div className="mt-3">
-            {hiddenAmount === "hidden" ? (
+            {displayAmount === "hidden" ? (
               <span className="w-40 h-6 rounded bg-secondary block"/>
             ) : (
               <h1 className="text-green-500 text-2xl font-bold leading-none">
@@ -110,7 +129,7 @@ export function Cards(){
           </div>
 
           <div className="mt-3">
-            {hiddenAmount === "hidden" ? (
+            {displayAmount === "hidden" ? (
               <span className="w-40 h-6 rounded bg-secondary block"/>
             ) : (
               <h1 className="text-red-500 text-2xl font-bold leading-none">
